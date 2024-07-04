@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Dress Shopping</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="kidswear.html">Kids Wear</a>
+        <a href="Traditional.html">Traditional</a>
+        <a href="Casuals.html">Casuals</a>
+        <a href="Dresses.html">Dresses</a>
+        <a href="Sarees.html">Sarees</a>
+        <a href="Night.html">Night</a>
+        <a href="cart.html">My Cart</a>
+        <a href="adminlogin.html">Admin</a>
+    </div>
+    <span onclick="openNav()"><button class="btn"><i class="fa fa-bars"></i></button></span>
+    
+    <div id="main"></div>
+
+    <center>
+        <header>
+            <h1>Welcome To Night Dress Shopping</h1>
+        </header>
+    </center>
+    <h2>Lowest Price With Highest Discounts</h2>
+
+    <div id="night">
+        <!-- Night dress items will be dynamically added here -->
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        async function fetchNightData() {
+            try {
+                const response = await fetch('http://localhost:3000/shoping'); // Adjust the URL to your API endpoint
+                const nightData = await response.json();
+
+                const nightContainer = document.getElementById('night');
+
+                // Filter night dress data where the name attribute is "night.html"
+                const nightItems = nightData.filter(item => item.name === 'night.html');
+
+                // Loop through filtered night dress data
+                nightItems.forEach(item => {
+                    // Create elements for each night dress
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('night-item');
+
+                    const image = document.createElement('img');
+                    image.src = `data:image/jpeg;base64,${btoa(new Uint8Array(item.image.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`;
+                    image.alt = 'Night Dress Image';
+                    itemDiv.appendChild(image);
+
+                    const description = document.createElement('p');
+                    description.textContent = item.des;
+                    itemDiv.appendChild(description);
+
+                    const price = document.createElement('p');
+                    price.textContent = `Price: ${item.price}`;
+                    itemDiv.appendChild(price);
+
+                    const color = document.createElement('p');
+                    color.textContent = `Color: ${item.color}`;
+                    itemDiv.appendChild(color);
+
+                    const buyButton = document.createElement('button');
+                    buyButton.textContent = 'Buy Now';
+                    buyButton.addEventListener('click', () => {
+                        window.location.href = 'buy.html'; // Redirect to the buy page
+                    });
+                    itemDiv.appendChild(buyButton);
+        
+                    const addToCartButton = document.createElement('button');
+                    addToCartButton.textContent = 'Add to Cart';
+                    addToCartButton.addEventListener('click', () => addToCart(item));
+                    itemDiv.appendChild(addToCartButton);
+        
+                    nightContainer.appendChild(itemDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching item data:', error);
+            }
+        }
+
+        function buyNightItem(item) {
+            alert(`Night wear "${item.des}" purchased!`);
+        }
+        
+        
+
+        // Call the fetchNightData function to fetch and display night dress data when the page loads
+        fetchNightData();
+    </script>
+    <script src="index.js"></script>
+    <style>
+        #night {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .night-item {
+            width: 300px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #eccccc;
+        }
+
+        .night-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .night-item p {
+            margin-bottom: 10px;
+        }
+
+        #night > div {
+            margin-left: 5%;
+            margin-bottom: 15%;
+            margin-top: 2%;
+            margin-right: 2%;
+        }
+    </style>
+</body>
+</html>

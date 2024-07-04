@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traditional Wear Shopping</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="kidswear.html">Kids Wear</a>
+        <a href="Traditional.html">Traditional</a>
+        <a href="Casuals.html">Casuals</a>
+        <a href="Dresses.html">Dresses</a>
+        <a href="Sarees.html">Sarees</a>
+        <a href="Night.html">Night</a>
+        <a href="cart.html">My Cart</a>
+        <a href="adminlogin.html">Admin</a>
+    </div>
+    <span onclick="openNav()"><button class="btn"><i class="fa fa-bars"></i></button></span>
+    
+    <div id="main"></div>
+
+    <center>
+        <header>
+            <h1>Welcome To Traditional Sarees Wear Shopping</h1>
+        </header>
+    </center>
+    <h2>Lowest Price With Highest Discounts</h2>
+
+    <div id="sarees">
+        <!-- Each saree will have its own container -->
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+        
+        async function fetchSareeData() {
+            try {
+                const response = await fetch('http://localhost:3000/shoping');
+                const sareeData = await response.json();
+        
+                const sareesContainer = document.getElementById('sarees');
+                const sarees = sareeData.filter(saree => saree.name === 'saree.html');
+        
+                sarees.forEach(saree => {
+                    const sareeDiv = document.createElement('div');
+                    sareeDiv.classList.add('saree');
+        
+                    const image = document.createElement('img');
+                    image.src = `data:image/jpeg;base64,${btoa(new Uint8Array(saree.image.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`;
+                    image.alt = 'Saree Image';
+                    sareeDiv.appendChild(image);
+        
+                    const description = document.createElement('p');
+                    description.textContent = saree.des;
+                    sareeDiv.appendChild(description);
+        
+                    const price = document.createElement('p');
+                    price.textContent = `Price: ${saree.price}`;
+                    sareeDiv.appendChild(price);
+        
+                    const color = document.createElement('p');
+                    color.textContent = `Color: ${saree.color}`;
+                    sareeDiv.appendChild(color);
+        
+                    const buyButton = document.createElement('button');
+                buyButton.textContent = 'Buy Now';
+                buyButton.addEventListener('click', () => {
+                    window.location.href = 'buy.html'; // Redirect to the buy page
+                });
+                    sareeDiv.appendChild(buyButton);
+        
+                    const addToCartButton = document.createElement('button');
+                    addToCartButton.textContent = 'Add to Cart';
+                    addToCartButton.addEventListener('click', () => addToCart(saree));
+                    sareeDiv.appendChild(addToCartButton);
+        
+                    sareesContainer.appendChild(sareeDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching saree data:', error);
+            }
+        }
+        
+        function buySaree(saree) {
+            alert(`Saree "${saree.des}" purchased!`);
+        }
+        
+        
+        
+        
+        
+        fetchSareeData();
+        
+    </script>
+    <script src="index.js"></script>
+    <style>
+        #sarees {
+            display: flex;
+            flex-wrap: wrap;
+            
+        }
+        
+        .saree {
+            width: 300px;
+            width: 300px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #eccccc;
+            
+        }
+        
+        .saree img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .saree p {
+            margin-bottom: 10px;
+        }
+        #sarees >div{
+            margin-left: 5%;
+            margin-bottom: 15%;
+            margin-top: 2%;
+            margin-right: 2%;
+        }
+        
+    </style>
+    
+</body>
+</html>

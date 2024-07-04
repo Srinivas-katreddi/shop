@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="kidswear.html">Kids Wear</a>
+        <a href="Traditional.html">Traditional</a>
+        <a href="Casuals.html">Casuals</a>
+        <a href="Dresses.html">Dresses</a>
+        <a href="Sarees.html">Sarees</a>
+        <a href="Night.html">Night</a>
+        <a href="cart.html">My Cart</a>
+        <a href="adminlogin.html">Admin</a>
+    </div>
+    <span onclick="openNav()"><button class="btn"><i class="fa fa-bars"></i></button></span>
+    
+    <div id="main"></div>
+
+    <center>
+        <header>
+            <h1>My Cart</h1>
+        </header>
+    </center>
+
+    <div id="cart-items">
+        <!-- Cart items will be dynamically added here -->
+    </div>
+
+    <div id="cart-total">
+        <p>Total Price: <span id="total-price">0</span></p>
+        <button onclick="buyItems()">Buy</button>
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCartItems();
+        });
+
+        function displayCartItems() {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartContainer = document.getElementById('cart-items');
+
+            // Clear previous content
+            cartContainer.innerHTML = '';
+
+            // Display each item in the cart
+            cartItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
+
+                const image = document.createElement('img');
+                image.src = item.image;
+                image.alt = 'Cart Item Image';
+                itemDiv.appendChild(image);
+
+                const description = document.createElement('p');
+                description.textContent = item.des;
+                itemDiv.appendChild(description);
+
+                const price = document.createElement('p');
+                price.textContent = `Price: ${item.price}`;
+                itemDiv.appendChild(price);
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.addEventListener('click', () => removeCartItem(item._id)); // Pass item ID to removeCartItem function
+                itemDiv.appendChild(removeButton);
+
+                cartContainer.appendChild(itemDiv);
+            });
+
+            // Update total price
+            updateTotalPrice(cartItems);
+        }
+
+        function addToCart(item) {
+            try {
+                const { _id, name, des, price, color, image } = item;
+
+                // Convert image data to a base64 string
+                const imageBase64 = `data:image/jpeg;base64,${btoa(new Uint8Array(image.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`;
+
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                // Check if the item already exists in the cart
+                const existingItemIndex = cart.findIndex(cartItem => cartItem._id === _id);
+
+                if (existingItemIndex !== -1) {
+                    // Increase quantity if item already exists in cart
+                    cart[existingItemIndex].quantity += 1;
+                } else {
+                    // Add new item to cart if it doesn't already exist
+                    const cartItem = { _id, name, des, price, color, image: imageBase64, quantity: 1 };
+                    cart.push(cartItem);
+                }
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                // Update cart display
+                displayCartItems();
+
+                alert('Item added to cart successfully!');
+            } catch (error) {
+                console.error('Error adding item to cart:', error);
+            }
+        }
+
+        function removeCartItem(itemId) {
+            try {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                // Find index of the item to be removed
+                const itemIndex = cart.findIndex(item => item._id === itemId);
+
+                if (itemIndex !== -1) {
+                    // Remove the item from the cart
+                    cart.splice(itemIndex, 1);
+
+                    localStorage.setItem('cart', JSON.stringify(cart));
+
+                    // Update cart display
+                    displayCartItems();
+                } else {
+                    console.warn(`Item with id ${itemId} not found in cart`);
+                }
+            } catch (error) {
+                console.error('Error removing item from cart:', error);
+            }
+        }
+
+        function updateTotalPrice(cartItems) {
+            const totalPriceElement = document.getElementById('total-price');
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                totalPrice += item.price * item.quantity;
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+        }
+
+        function buyItems() {
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        
+            // Here you can implement the logic for buying the items, like sending the data to a server, etc.
+        
+            // After buying, you may want to notify the user or perform other actions
+            if (cartItems.length > 0) {
+                window.location.href = 'buy.html';
+                // Clear the cart after purchase
+                localStorage.removeItem('cart');
+                displayCartItems();
+            } else {
+                alert('Your cart is empty!');
+            }
+        }
+    </script>
+
+    <style>
+        #cart-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        
+        .cart-item {
+            width: 300px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #eccccc;
+        }
+        
+        .cart-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .cart-item p {
+            margin: 5px 0;
+        }
+        
+        .cart-item button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        #cart-total {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #cart-total p {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        #cart-total button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        #cart-total button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    
+</body>
+</html>

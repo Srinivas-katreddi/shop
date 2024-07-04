@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Thank you for your purchase!</h1>
+        <p>Please Confirm your order by contacting with us.<br><br>
+
+            <b>Contact us:</b><a href="tel:+91 6302608457">6302608457</a>
+        </p>
+        
+        <button id="continue-shopping">Continue Shopping</button>
+    </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        p {
+            color: #666;
+        }
+        
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        button:hover {
+            background-color: #218838;
+        }
+        
+    </style>
+    <script>
+        document.getElementById('continue-shopping').addEventListener('click', function() {
+            window.location.href = 'index.html'; // Redirect to the main shopping page
+        });
+        
+    </script>
+</body>
+</html>

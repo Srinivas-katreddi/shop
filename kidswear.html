@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Wear Shopping</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="kidswear.html">Kids Wear</a>
+        <a href="Traditional.html">Traditional</a>
+        <a href="Casuals.html">Casuals</a>
+        <a href="Dresses.html">Dresses</a>
+        <a href="Sarees.html">Sarees</a>
+        <a href="Night.html">Night</a>
+        <a href="cart.html">My Cart</a>
+        <a href="adminlogin.html">Admin</a>
+    </div>
+    <span onclick="openNav()"><button class="btn"><i class="fa fa-bars"></i></button></span>
+    
+    <div id="main"></div>
+
+    <center>
+        <header>
+            <h1>Welcome To Kids Wear Shopping</h1>
+        </header>
+    </center>
+    <h2>Lowest Price With Highest Discounts</h2>
+
+    <div id="kids">
+        <!-- Kids wear items will be dynamically added here -->
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        async function fetchKidsData() {
+            try {
+                const response = await fetch('http://localhost:3000/shoping'); // Adjust the URL to your API endpoint
+                const kidsData = await response.json();
+
+                const kidsContainer = document.getElementById('kids');
+
+                // Filter kids wear data where the name attribute is "kids.html"
+                const kidsItems = kidsData.filter(item => item.name === 'kids.html');
+
+                // Loop through filtered kids wear data
+                kidsItems.forEach(item => {
+                    // Create elements for each kids wear
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('kids-item');
+
+                    const image = document.createElement('img');
+                    image.src = `data:image/jpeg;base64,${btoa(new Uint8Array(item.image.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))}`;
+                    image.alt = 'Kids Wear Image';
+                    itemDiv.appendChild(image);
+
+                    const description = document.createElement('p');
+                    description.textContent = item.des;
+                    itemDiv.appendChild(description);
+
+                    
+
+                    const price = document.createElement('p');
+                    price.textContent = `Price: ${item.price}`;
+                    itemDiv.appendChild(price);
+
+                    
+                    const color = document.createElement('p');
+                    color.textContent = `Color: ${item.color}`;
+                    itemDiv.appendChild(color);
+
+                    const buyButton = document.createElement('button');
+                buyButton.textContent = 'Buy Now';
+                buyButton.addEventListener('click', () => {
+                    window.location.href = 'buy.html'; // Redirect to the buy page
+                });
+                    itemDiv.appendChild(buyButton);
+        
+                    const addToCartButton = document.createElement('button');
+                    addToCartButton.textContent = 'Add to Cart';
+                    addToCartButton.addEventListener('click', () => addToCart(item));
+                    itemDiv.appendChild(addToCartButton);
+        
+                    kidsContainer.appendChild(itemDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching item data:', error);
+            }
+        }
+
+        function buyKidswearItem(item) {
+            alert(`Kidswear "${item.des}" purchased!`);
+        }
+        
+        
+        // Call the fetchKidsData function to fetch and display kids wear data when the page loads
+        fetchKidsData();
+    </script>
+    <style>
+        #kids {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .kids-item {
+            width: 300px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #eccccc;
+        }
+
+        .kids-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .kids-item p {
+            margin-bottom: 10px;
+        }
+
+        #kids > div {
+            margin-left: 5%;
+            margin-bottom: 15%;
+            margin-top: 2%;
+            margin-right: 2%;
+        }
+    </style>
+    <script src="index.js"></script>
+</body>
+</html>

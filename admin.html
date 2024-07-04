@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Shoping Data</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="kidswear.html">Kids Wear</a>
+        <a href="Traditional.html">Traditional</a>
+        <a href="Casuals.html">Casuals</a>
+        <a href="Dresses.html">Dresses</a>
+        <a href="Sarees.html">Sarees</a>
+        <a href="Night.html">Night</a>
+        <a href="cart.html">My Cart</a>
+        <a href="adminlogin.html">Admin</a>
+    </div>
+    <span onclick="openNav()"><button class="btn"><i class="fa fa-bars"></i></button></span>
+    
+    <div id="main"></div>
+
+    <center><h1>Manage Shoping Data</h1></center>
+    
+    <form id="insertForm">
+        <center><h2>Insert New Item</h2></center>
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" required><br>
+        
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" required><br>
+        
+        <label for="color">Color:</label>
+        <input type="text" id="color" name="color" required><br>
+        
+        <label for="imageFile">Image File Name:</label>
+        <input type="text" id="imageFile" name="imageFile" required><br>
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="des">Description:</label>
+        <input type="text" id="des" name="des" required><br>
+
+        <button type="submit">Insert</button>
+    </form>
+
+    <form id="deleteForm">
+        <center><h2>Delete Item</h2></center>
+        <label for="deleteId">ID:</label>
+        <input type="text" id="deleteId" name="deleteId" required><br>
+        
+        <button type="submit">Delete</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
