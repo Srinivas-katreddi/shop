@@ -10,7 +10,8 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const imagePath = 'C:\\Users\\Srinivas\\OneDrive\\Desktop\\project s img\\imgdatabase';
+const imagePath = 'imgdatabase';
+const sqlInitPath = path.join(__dirname, 'init.sql');
 
 let db;
 (async () => {
@@ -19,11 +20,15 @@ let db;
             host: 'localhost',
             user: 'root',
             password: 'root',
-            database: 'shop'
+            multipleStatements: true
         });
-        console.log('Database connected successfully');
+
+        // Read and execute the SQL initialization file
+        const initSql = fs.readFileSync(sqlInitPath, 'utf-8');
+        await db.query(initSql);
+        console.log('Database initialized successfully');
     } catch (err) {
-        console.error('Database connection failed:', err);
+        console.error('Database initialization failed:', err);
         process.exit(1);
     }
 })();
@@ -33,7 +38,7 @@ app.post('/insert_image', async (req, res) => {
     const imagePathWithFilename = path.join(imagePath, imageFile);
     const imageBuffer = fs.readFileSync(imagePathWithFilename);
 
-    const sql = 'INSERT INTO sys.shoping (id, image, price, color, name, des) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO shop.shoping (id, image, price, color, name, des) VALUES (?, ?, ?, ?, ?, ?)';
     try {
         await db.execute(sql, [id, imageBuffer, price, color, name, des]);
         res.status(201).send({ message: 'Item inserted successfully' });
@@ -45,7 +50,7 @@ app.post('/insert_image', async (req, res) => {
 app.post('/delete_image', async (req, res) => {
     const { id } = req.body;
 
-    const sql = 'SELECT image FROM sys.shoping WHERE id = ?';
+    const sql = 'SELECT image FROM shop.shoping WHERE id = ?';
     try {
         const [rows] = await db.execute(sql, [id]);
         if (rows.length === 0) {
@@ -53,7 +58,7 @@ app.post('/delete_image', async (req, res) => {
             return;
         }
 
-        const deleteSql = 'DELETE FROM sys.shoping WHERE id = ?';
+        const deleteSql = 'DELETE FROM shop.shoping WHERE id = ?';
         await db.execute(deleteSql, [id]);
         res.status(200).send({ message: 'Item deleted successfully' });
     } catch (err) {
@@ -62,7 +67,7 @@ app.post('/delete_image', async (req, res) => {
 });
 
 app.get('/shoping', async (req, res) => {
-    const sql = 'SELECT * FROM shoping';
+    const sql = 'SELECT * FROM shop.shoping';
     try {
         const [rows] = await db.execute(sql);
         res.status(200).json(rows);
@@ -71,6 +76,23 @@ app.get('/shoping', async (req, res) => {
     }
 });
 
+// Endpoint to serve images
+app.get('/image/:id', async (req, res) => {
+    const { id } = req.params;
+    const sql = 'SELECT image FROM shop.shoping WHERE id = ?';
+    try {
+        const [rows] = await db.execute(sql, [id]);
+        if (rows.length === 0) {
+            res.status(404).send({ message: 'Image not found' });
+            return;
+        }
+        const image = rows[0].image;
+        res.writeHead(200, {'Content-Type': 'image/jpeg'});
+        res.end(image, 'binary');
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
